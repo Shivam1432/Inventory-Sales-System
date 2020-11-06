@@ -36,6 +36,9 @@ public class Administrator {
 		if (stockDao.getStock(sales.getProductID())==null)
 			return "Unknown Product for sales";
 		
+		if(sales.getProductID()!=stockDao.getStock(sales.getProductID()).getProductID())
+			return "Sales ID does not match";
+		
 		if (stockDao.getStock(sales.getProductID()).getQuantityOnHand() < sales.getQuantitySold())
 			return "Not enough stock on hand for sales";
 		
