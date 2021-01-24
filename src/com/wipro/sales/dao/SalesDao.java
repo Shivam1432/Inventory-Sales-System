@@ -11,7 +11,7 @@ public class SalesDao {
 	public int insertSales(Sales sales) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-		String sql = "INSERT INTO HR.TBL_SALES VALUES(?, ?, ?, ?, ?)";
+		String sql = "INSERT INTO HR.TBL_SALES VALUES(?, ?, ?, ?, ?, ?)";
 		
 		//java.util.Date utilDate = new java.util.Date();
 		java.sql.Date sqlDate = new java.sql.Date(sales.getSalesDate().getTime());
@@ -24,6 +24,7 @@ public class SalesDao {
 			pstmt.setString(3, sales.getProductID());
 			pstmt.setInt(4, sales.getQuantitySold());
 			pstmt.setDouble(5, sales.getSalesPricePerUnit());
+			pstmt.setString(6, sales.getUserName());
 			int t=pstmt.executeUpdate();
 			if (t == 1) 
 				return 1;
