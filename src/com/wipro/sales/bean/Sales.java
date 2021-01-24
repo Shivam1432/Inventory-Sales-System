@@ -6,6 +6,7 @@ public class Sales {
 	private String productID;
 	private int quantitySold;
 	private double salesPricePerUnit;
+	private String userName;
 	public String getSalesID() {
 		return salesID;
 	}
@@ -35,6 +36,12 @@ public class Sales {
 	}
 	public void setSalesPricePerUnit(double salesPricePerUnit) {
 		this.salesPricePerUnit = salesPricePerUnit;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	
 }
