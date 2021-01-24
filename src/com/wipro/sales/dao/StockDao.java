@@ -71,6 +71,26 @@ public class StockDao {
 			return 0;
 		}
 	}
+	public int reStock(String productID, int newItems)
+	{
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		String sql = "UPDATE HR.TBL_STOCK SET Quantity_On_Hand = Quantity_On_Hand + ? WHERE Product_ID = ?";
+		
+		try {
+			conn = DBUtil.getDBConnection();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, newItems);
+			pstmt.setString(2, productID);
+			int t=pstmt.executeUpdate();
+			
+			if (t == 1) return 1;
+			else return 0;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
 	public Product getStock(String productID) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
