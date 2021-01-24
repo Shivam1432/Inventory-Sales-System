@@ -36,3 +36,24 @@ CREATE VIEW V_SALES_REPORT AS
 			(Sales_Price_Per_Unit - Product_Unit_Price) Profit_Amount
 	FROM TBL_STOCK NATURAL JOIN TBL_SALES
 	ORDER BY Profit_Amount DESC, Sales_ID ASC;
+	
+	create table TBL_ORDERS(
+        Product_ID Varchar2(6),
+	Product_Name Varchar2(20),
+	Quantity Number(11),
+        Item_Sold Varchar2(5),
+        User_name Varchar2(40),
+        CONSTRAINT FK21 FOREIGN KEY(Product_ID) REFERENCES TBL_STOCK(Product_ID),
+        CONSTRAINT CH22 CHECK(Quantity >= 0)
+);
+
+CREATE VIEW V_RECEIPT1 AS
+	SELECT Sales_ID, Sales_Date, Product_ID, Product_Name, 
+			Quantity_Sold, User_Name, Sales_Price_Per_Unit,Item_Sold	
+FROM TBL_SALES NATURAL JOIN TBL_ORDERS
+ORDER BY Sales_Date DESC;
+
+alter table TBL_SALES add USER_NAME varchar2(40);
+alter table TBL_SALES add foreign key (USER_NAME) REFERENCES TBL_ORDERS(USER_NAME);
+select * from TBL_ORDERS;
+alter table TBL_ORDERS add PRIMARY KEY(USER_NAME);
