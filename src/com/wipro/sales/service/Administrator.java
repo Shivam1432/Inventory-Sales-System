@@ -5,11 +5,13 @@ import java.util.Date;
 import com.wipro.sales.bean.Sales;
 import com.wipro.sales.bean.SalesReport;
 import com.wipro.sales.bean.Product;
+import com.wipro.sales.dao.OrdersDao;
 import com.wipro.sales.dao.SalesDao;
 import com.wipro.sales.dao.StockDao;
 public class Administrator {
 	private static StockDao stockDao = new StockDao();
 	private static SalesDao salesDao = new SalesDao();
+	private static OrdersDao orderDao = new OrdersDao();
 	
 	public synchronized String insertStock(Product stock) {		
 		if (stock!= null && stock.getProductName().length() >= 2) {
@@ -29,14 +31,25 @@ public class Administrator {
 		else 
 			return "record cannot be deleted";
 	}
+	public String refillStock(String ProductID,int items)
+	{
+		if(stockDao.reStock(ProductID, items)==1)
+		{
+			return "Product restocked successfully";
+		}
+		else
+		{
+			return "Data not valid for restocking";
+		}
+	}
 	public String insertSales(Sales sales) {		
 		if (sales.getSalesID() != null) 
 			return "Object not valid for insertion";
 		
-		if (stockDao.getStock(sales.getProductID())==null)
+		if (stockDao.getStock(sales.getProductID())==null )
 			return "Unknown Product for sales";
 		
-		if(sales.getProductID()!=stockDao.getStock(sales.getProductID()).getProductID())
+		if(!sales.getProductID().equals(stockDao.getStock(sales.getProductID()).getProductID()))
 			return "Sales ID does not match";
 		
 		if (stockDao.getStock(sales.getProductID()).getQuantityOnHand() < sales.getQuantitySold())
@@ -45,12 +58,26 @@ public class Administrator {
 		if (sales.getSalesDate().after(new Date()))
 			return "Invalid date";
 		
+		if(!(sales.getUserName()).equals(orderDao.getOrder(sales.getUserName()).getUname()))
+		{
+			return "UserName does not match";
+		}
+		
 		String salesID = salesDao.generateSalesID(sales.getSalesDate());
 		sales.setSalesID(salesID);
 		
 		if (salesDao.insertSales(sales) == 1) {
 			if (stockDao.updateStock(sales.getProductID(), sales.getQuantitySold()) == 1)
-				return "sales record inserted successfully";
+			{
+				if (orderDao.updateOrder(sales.getProductID(), sales.getQuantitySold(),sales.getUserName()) == 1)
+				{
+					return "sales record inserted successfully";
+				}
+				else
+				{
+					return "order table not updated successfully";
+				}
+			}	
 			else 
 				return "Error";
 		} else {
